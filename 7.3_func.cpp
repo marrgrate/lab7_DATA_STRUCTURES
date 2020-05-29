@@ -1,6 +1,6 @@
 #include "7.3_func.h"
 
-int valid_input_age(int num)
+int validInputAge(int num)
 {
 	int counter = 3;
 	while (counter)
@@ -14,7 +14,7 @@ int valid_input_age(int num)
 	}
 	return num;
 }
-int valid_input_course(int num)
+int validInputCourse(int num)
 {
 	int counter = 3;
 	while (counter)
@@ -28,7 +28,7 @@ int valid_input_course(int num)
 	}
 	return num;
 }
-float valid_input_gpa(float num)
+float validInputGpa(float num)
 
 {
 	int counter = 3;
@@ -43,16 +43,15 @@ float valid_input_gpa(float num)
 	}
 	return num;
 }
-
 void menu()
 {
 	cout << "MENU\n"
 		<< "\t0 - Finish program\n"
 		<< "\t1 - Add new element\n"
 		<< "\t2 - Show list\n"
-		<< "\t3 - Delete students with low GPA\n";
+		<< "\t3 - Delete students with low GPA\n"
+		<< "\t4 - Delete list\n";
 }
-
 void setData(Student& element)
 {
 	rewind(stdin);
@@ -61,9 +60,9 @@ void setData(Student& element)
 	cout << "\nDate of birth\t";
 	getline(cin, element.date_of_birth);
 	cout << "\nCourse\t";
-	element.course = valid_input_course(element.course = 0);
+	element.course = validInputCourse(element.course = 0);
 	cout << "\nGrage Point Average\t";
-	element.gpa = valid_input_gpa(element.gpa = 0);
+	element.gpa = validInputGpa(element.gpa = 0);
 	system("cls");
 }
 
@@ -75,15 +74,14 @@ void getAverage(Student* top, float& average)
 	{
 		average += p->gpa;
 		counter++;
-		p = p->next;
+		p = p->p;
 	}
 	average /= counter;
 }
 
-
-//ôóíêöèÿ çàíåñåíèÿ ıëåìåíòà c êëş÷îì key â ñïèñîê
-// ïî âîçğàñòàíèş êëş÷åé
-// top - óêàçàòåëü íà÷àëà ñïèñêà
+//Ñ„ÑƒĞ½ĞºÑ†Ğ¸Ñ Ğ·Ğ°Ğ½ĞµÑĞµĞ½Ğ¸Ñ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ğ° c ĞºĞ»ÑÑ‡Ğ¾Ğ¼ key Ğ² ÑĞ¿Ğ¸ÑĞ¾Ğº
+// Ğ¿Ğ¾ Ğ²Ğ¾Ğ·Ñ€Ğ°ÑÑ‚Ğ°Ğ½Ğ¸Ñ ĞºĞ»ÑÑ‡ĞµĞ¹
+// top - ÑƒĞºĞ°Ğ·Ğ°Ñ‚ĞµĞ»ÑŒ Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ° ÑĞ¿Ğ¸ÑĞºĞ°
 void addNode(Student*& top, Student data)
 {
 	Student* p = NULL;
@@ -92,7 +90,7 @@ void addNode(Student*& top, Student data)
 	temp->date_of_birth = data.date_of_birth;
 	temp->course = data.course;
 	temp->gpa = data.gpa;
-	temp->next = NULL;
+	temp->p = NULL;
 
 	if (!top)
 		top = temp;
@@ -100,54 +98,70 @@ void addNode(Student*& top, Student data)
 	{
 		if (top->name >= data.name)
 		{
-			temp->next = top;
+			temp->p = top;
 			top = temp;
 		}
 		else
 		{
 			findGreaterThan(top, data.name, p);
-			// ïîèñê ïî êëş÷ó ìåñòà äëÿ íîâîãî ıëåìåíòà
-			temp->next = p->next;
-			// âñòàâëÿåì ìåæäó ıëåìåíòàìè ñ àäğåñàìè p è top
-			p->next = temp;
+			// Ğ¿Ğ¾Ğ¸ÑĞº Ğ¿Ğ¾ ĞºĞ»ÑÑ‡Ñƒ Ğ¼ĞµÑÑ‚Ğ° Ğ´Ğ»Ñ Ğ½Ğ¾Ğ²Ğ¾Ğ³Ğ¾ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ğ°
+			temp->p = p->p;
+			// Ğ²ÑÑ‚Ğ°Ğ²Ğ»ÑĞµĞ¼ Ğ¼ĞµĞ¶Ğ´Ñƒ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ğ°Ğ¼Ğ¸ Ñ Ğ°Ğ´Ñ€ĞµÑĞ°Ğ¼Ğ¸ p Ğ¸ top
+			p->p = temp;
 		}
 	}
 }
-
-// ôóíêöèÿ íàõîæäåíèÿ ıëåìåíòà c êëş÷îì <key
-void findEqual(Student* top, float key, Student*& ppv)
-{
-	Student* pv = top;
-	ppv = top;
-	//ïîèñê ıëåìåíòà c êëş÷îì = key
-	while (pv && pv->gpa == key)
-	{
-		ppv = pv; // çàïîìèíàåì àäğåñ ïğåäûäóùåãî ıëåìåíòà
-		pv = pv->next;
-	}
-}
-
-// ôóíêöèÿ íàõîæäåíèÿ ıëåìåíòà c êëş÷îì >key
-// top - àäğåñ íà÷àëà ñïèñêà
-// ppv - àäğåñ ıëåìåíòà ñïèñêà, óêàçûâàşùåãî íà íàéäåííûé
+// Ñ„ÑƒĞ½ĞºÑ†Ğ¸Ñ Ğ½Ğ°Ñ…Ğ¾Ğ¶Ğ´ĞµĞ½Ğ¸Ñ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ğ° c ĞºĞ»ÑÑ‡Ğ¾Ğ¼ >key
+// top - Ğ°Ğ´Ñ€ĞµÑ Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ° ÑĞ¿Ğ¸ÑĞºĞ°
+// ppv - Ğ°Ğ´Ñ€ĞµÑ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ğ° ÑĞ¿Ğ¸ÑĞºĞ°, ÑƒĞºĞ°Ğ·Ñ‹Ğ²Ğ°ÑÑ‰ĞµĞ³Ğ¾ Ğ½Ğ° Ğ½Ğ°Ğ¹Ğ´ĞµĞ½Ğ½Ñ‹Ğ¹
 void findGreaterThan(Student* top, string key, Student*& ppv)
 {
 	Student* pv = top;
 	ppv = top;
-	//ïîèñê ıëåìåíòà c êëş÷îì > key
+	//Ğ¿Ğ¾Ğ¸ÑĞº ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ğ° c ĞºĞ»ÑÑ‡Ğ¾Ğ¼ > key
 	while (pv && pv->name <= key)
 	{
-		ppv = pv; // çàïîìèíàåì àäğåñ ïğåäûäóùåãî ıëåìåíòà
-		pv = pv->next;
+		ppv = pv; // Ğ·Ğ°Ğ¿Ğ¾Ğ¼Ğ¸Ğ½Ğ°ĞµĞ¼ Ğ°Ğ´Ñ€ĞµÑ Ğ¿Ñ€ĞµĞ´Ñ‹Ğ´ÑƒÑ‰ĞµĞ³Ğ¾ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚Ğ°
+		pv = pv->p;
 	}
 }
-
-void deleteNode(Student*& node, Student*& prev)
+Student* deleteNode(Student*& node, float key)
 {
-	if (!prev)
-		node = node->next;
-	else
-		prev->next = node->next;
+		Student* pv, * ppv;
+		findEqual(node, key, ppv);
+		pv = ppv->p;
+		if (pv)
+		{
+			if (node->gpa == key)
+			{			
+				node = node->p;
+				return node;
+			}
+			else
+				ppv->p = pv->p;
+			delete pv;
+		}
+		return ppv;
+}
+void deleteList(Student*& top)
+{
+	Student* p;
+	while (top)
+	{
+		p = top->p;
+		delete top;
+		top = p;
+	}
+}
+void findEqual(Student* top, float key, Student*& ppv)
+{
+	Student* pv = top;
+	ppv = top;
+	while (pv && pv->gpa != key)
+	{
+		ppv = pv;
+		pv = pv->p;
+	}
 }
 
 void printList(Student* top)
@@ -162,7 +176,7 @@ void printList(Student* top)
 	{
 		cout << top->name << '\t' << top->date_of_birth << "\t\t"
 			<< top->course << '\t' << top->gpa << endl;
-		top = top->next;
+		top = top->p;
 	}
 	cout << "\n";
 }
