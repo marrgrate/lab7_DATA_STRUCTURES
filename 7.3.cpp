@@ -9,8 +9,6 @@
 //удалив их из исходного списка.
 #include "7.3_func.h"
 
-
-
 int main()
 {
 	Student* top = NULL;
@@ -43,7 +41,6 @@ int main()
 				break;
 			}
 			Student* p = top;
-			Student* prev = NULL;
 			float average = 0;
 			getAverage(top, average);
 			cout << endl << "average = " << average << endl;
@@ -51,18 +48,20 @@ int main()
 			while (p)
 			{
 				if (p->gpa < average)
-					deleteNode(top, prev);
-				prev = p;
-				p = p->next;
+					p = deleteNode(top, p->gpa);
+				else p = p->p;
 			}
+		}
+		case 4: 
+		{
+			deleteList(top);
+			break;
 		}
 		default: break;
 		}
-
 		system("pause");
 		system("cls");
 	}	
 	return 0;
 }
-
 
